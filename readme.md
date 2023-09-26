@@ -21,12 +21,12 @@ There are few improvements that can be made, but we all now that we SHOULD NOT I
 
 1. The random generator seeder
 
-This algorithm would perform really better if there was some way to block the random order generator to create
+    This algorithm would perform really better if the random order generator didn't create repeted orderings.
 
 2. Limit Goroutines
 
-Limiting the max number of Goroutines would prevent your computer from exploding when trying bigger slice lengths
+    Limiting the max number of Goroutines would prevent your computer from exploding when trying bigger slice lengths.
 
 ## Contributing
 
-This project is an open-source project, and contributions from other developers are welcome. If you encounter any issues or have suggestions for improvement, please submit them on the project's GitHub page. Any new implementation is welcome, and you can choose your preferred language.
+This project is an open-source project, and contributions from other developers are welcome. If you encounter any issues or have suggestions for improvement, please submit them on the project's GitHub page.
