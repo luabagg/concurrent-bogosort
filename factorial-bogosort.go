@@ -24,8 +24,8 @@ var (
 func Sort(slice []int) ([]int, error) {
 	sliceLen := len(slice)
 
-	if sliceLen > 10 {
-		return nil, errors.New("weeew why so much numbers")
+	if sliceLen >= 10 {
+		return nil, errors.New("weeew why so many numbers")
 	}
 
 	maxOrdering, err := recursiveFactorial(sliceLen)
@@ -41,7 +41,7 @@ func Sort(slice []int) ([]int, error) {
 
 	wg.Add(1)
 	for i := int64(0); i < maxOrdering; i++ {
-		go shuffle(sliceChan, slice[:], i, ctx)
+		go bogosort(sliceChan, slice[:], ctx)
 	}
 	wg.Wait()
 
@@ -69,8 +69,8 @@ func recursiveFactorial(number int) (int64, error) {
 	}
 }
 
-// shuffle get a slice of random positions and verify if the slice is sorted.
-func shuffle(sliceChan chan []int, slice []int, it int64, ctx context.Context) {
+// bogosort shuffles the slice and verify if the it is sorted.
+func bogosort(sliceChan chan []int, slice []int, ctx context.Context) {
 	select {
 	case <-ctx.Done():
 		return
@@ -81,6 +81,17 @@ func shuffle(sliceChan chan []int, slice []int, it int64, ctx context.Context) {
 	goroutinesQty += 1
 	m.Unlock()
 
+	newOrder := shuffle(slice)
+
+	if sort.IntsAreSorted(newOrder) {
+		sliceChan <- newOrder
+		cancel()
+		wg.Done()
+	}
+}
+
+// shuffle returns a slice of random positions.
+func shuffle(slice []int) []int {
 	sliceLen := len(slice)
 
 	newSlice := make([]int, sliceLen)
@@ -90,13 +101,7 @@ func shuffle(sliceChan chan []int, slice []int, it int64, ctx context.Context) {
 		newSlice[i] = slice[int(positions[i]-1)]
 	}
 
-	if sort.IntsAreSorted(newSlice) {
-		sliceChan <- newSlice
-		cancel()
-		wg.Done()
-	}
-
-	return
+	return newSlice
 }
 
 // getRandomPositions returns a slice of random positions.
@@ -131,6 +136,7 @@ func getRandomPositions(slice []int) []int64 {
 
 // uniqueId generates a unique identifier for each sequence.
 // Example: [4, 1, 2] -> 412
+// TODO: It can be problematic with slices like [11, 1, 21, 2] -> 211121
 func uniqueId(slice []int64) int64 {
 	var res int64
 
@@ -144,9 +150,9 @@ func uniqueId(slice []int64) int64 {
 }
 
 // intInSlice verifies if the integer is in the given slice.
-func intInSlice(a int64, list []int64) bool {
-	for _, b := range list {
-		if b == a {
+func intInSlice(integer int64, list []int64) bool {
+	for _, i := range list {
+		if i == integer {
 			return true
 		}
 	}
