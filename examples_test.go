@@ -1,9 +1,9 @@
-package factorial_bogosort_test
+package concurrent_bogosort_test
 
 import (
 	"fmt"
 
-	factorial_bogosort "github.com/luabagg/factorial-bogosort"
+	coroutine_bogosort "github.com/luabagg/concurrent-bogosort"
 )
 
 func ExampleSort() {
@@ -11,11 +11,12 @@ func ExampleSort() {
 
 	fmt.Printf("Current slice: %v\n", slice)
 
-	res, err := factorial_bogosort.Sort(slice)
+	res, err := coroutine_bogosort.Sort(slice)
 	if err != nil {
 		fmt.Print(err)
+	} else {
+		fmt.Printf("Ordered slice: %v\n", res)
 	}
-	fmt.Printf("Ordered slice: %v\n", res)
 
 	// Output:
 	// Current slice: [12 5 22]
